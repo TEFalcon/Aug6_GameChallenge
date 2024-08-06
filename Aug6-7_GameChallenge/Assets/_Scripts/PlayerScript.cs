@@ -20,6 +20,19 @@ public class PlayerScript : MonoBehaviour
     }
 
 
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision.gameObject.GetComponent<PumpkinScript>() != null)
+        {
+            collision.gameObject.GetComponent<PumpkinScript>().ResetPumpkin();
+            GameManager.Instance.AddOneToScore();
+        }
+        if (collision.gameObject.GetComponent<EnemyScript>() != null)
+        {
+            collision.gameObject.GetComponent<PumpkinScript>().ResetPumpkin();
+        }
+    }
+
 
     private void HandleMovement()
     {

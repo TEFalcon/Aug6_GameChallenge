@@ -14,6 +14,8 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance;
     private GameState gState;
 
+    private int score;
+    [SerializeField] private ScoreUI scoreUI;
     private void ChangeGameState(GameState state)
     {
         this.gState =state;
@@ -37,13 +39,19 @@ public class GameManager : MonoBehaviour
         //for now:
             ChangeGameState(GameState.GamePlaying);
         //del
+
+        score= 0;
     }
     private void Update()
     {
         
     }
 
-
+    public void AddOneToScore()
+    {
+        score++;
+        scoreUI.ChageScoreUI(score);
+    }
 
     public GameState GetGameState() { return gState; }
 

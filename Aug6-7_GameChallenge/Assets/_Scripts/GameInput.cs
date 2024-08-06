@@ -27,14 +27,14 @@ public class GameInput : MonoBehaviour
     {
         //inputActions.Player.Movement.
         inputActions.Player.PauseMenuToggle.performed += PauseMenuToggle_performed;
+        
     }
 
     private void PauseMenuToggle_performed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
     {
-        if (GameManager.Instance.IsGamePlayin())
-        {
+
             MenuToggleAction?.Invoke(this, EventArgs.Empty);
-        }
+        
     }
 
 
@@ -48,5 +48,10 @@ public class GameInput : MonoBehaviour
         }
 
         return ret;
+    }
+
+    private void OnDestroy()
+    {
+        inputActions.Player.Disable();
     }
 }

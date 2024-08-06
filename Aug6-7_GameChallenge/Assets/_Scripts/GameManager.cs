@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class GameManager : MonoBehaviour
 {
@@ -14,11 +16,17 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance;
     private GameState gState;
 
+    private bool isGamePaused = false;
+    public event EventHandler<OnMenuToggleEventArgs> MenuToggleAction;
+    public class OnMenuToggleEventArgs : EventArgs
+    {
+        public bool ToggleDir;
+    }
     private int score;
     [SerializeField] private ScoreUI scoreUI;
     private void ChangeGameState(GameState state)
     {
-        this.gState =state;
+        this.gState = state;
     }
 
     private float timerCountDown;
@@ -37,16 +45,33 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         //for now:
-            ChangeGameState(GameState.GamePlaying);
+        ChangeGameState(GameState.GamePlaying);
         //del
 
-        score= 0;
-    }
-    private void Update()
-    {
-        
+        score = 0;
+        isGamePaused = false;
+        GameInput.Instance.MenuToggleAction += GameInput_MenuToggleAction;
     }
 
+    private void GameInput_MenuToggleAction(object sender, System.EventArgs e)
+    {
+        ActivateMenuToggleAction();
+        Debug.Log(isGamePaused);
+    }
+
+    private void Update()
+    {
+        switch (gState)
+        {
+            case GameState.WaitingToStart:
+
+                break;
+        }
+    }
+    private void OnDestroy()
+    {
+        isGamePaused= false;
+    }
     public void AddOneToScore()
     {
         score++;
@@ -59,5 +84,29 @@ public class GameManager : MonoBehaviour
     public bool IsGamePlayin()
     {
         return gState == GameState.GamePlaying;
+    }
+
+
+    public void ActivateMenuToggleAction()
+    {
+        if (IsGamePlayin())
+        {
+
+            if (isGamePaused)
+            {
+                MenuToggleAction?.Invoke(this, new OnMenuToggleEventArgs
+                {
+                    ToggleDir = false,
+                });
+            }
+            else if (!isGamePaused)
+            {
+                MenuToggleAction?.Invoke(this, new OnMenuToggleEventArgs
+                {
+                    ToggleDir = true,
+                });
+            }
+            isGamePaused = !isGamePaused;
+        }
     }
 }

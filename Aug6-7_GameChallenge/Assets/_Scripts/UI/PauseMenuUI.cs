@@ -4,15 +4,47 @@ using UnityEngine;
 
 public class PauseMenuUI : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
-        
+        GameManager.Instance.MenuToggleAction += GameManager_MenuToggleAction;
+        Hide();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void GameManager_MenuToggleAction(object sender, GameManager.OnMenuToggleEventArgs e)
     {
-        
+        if (GameManager.Instance.IsGamePlayin())
+        {
+            if (e.ToggleDir)
+            {
+                Show();
+            }
+            else
+            {
+                Hide();
+
+            }
+        }
+    }
+
+
+    private void Show()
+    {
+        gameObject.SetActive(true);
+
+        //ResumeButton.Select();
+    }
+
+    private void Hide()
+    {
+        gameObject.SetActive(false);
+    }
+
+    public void SendToMainMenuScene()
+    {
+        SceneLoader.LoadNextScene(SceneLoader.Scene.MainMenuScene);
+    }
+    public void ResetScene()
+    {
+        SceneLoader.LoadNextScene(SceneLoader.Scene.GameScene);
     }
 }

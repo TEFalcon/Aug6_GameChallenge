@@ -1,12 +1,28 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerScript : MonoBehaviour
 {
+    public static PlayerScript Instance;
+    public event EventHandler<OnObjecttouchEventArgs> OnTouchPumpkin;
+    public event EventHandler<OnObjecttouchEventArgs> OnTouchEnemy;
 
+    public class OnObjecttouchEventArgs : EventArgs
+    {
+        public Collider2D collision;
+    }
     [SerializeField] private float movementSpeed = 2f;
 
+    private void Awake()
+    {
+        if (Instance != null)
+        {
+            Destroy(Instance);
+        }
+        Instance = this;
+    }
     // Start is called before the first frame update
     void Start()
     {
@@ -24,12 +40,15 @@ public class PlayerScript : MonoBehaviour
     {
         if(collision.gameObject.GetComponent<PumpkinScript>() != null)
         {
-            collision.gameObject.GetComponent<PumpkinScript>().ResetPumpkin();
+            OnTouchPumpkin?.Invoke(this, new OnObjecttouchEventArgs
+            {
+                collision = collision
+            });
             GameManager.Instance.AddOneToScore();
         }
         if (collision.gameObject.GetComponent<EnemyScript>() != null)
         {
-            collision.gameObject.GetComponent<PumpkinScript>().ResetPumpkin();
+            //collision.gameObject.GetComponent<EnemyScript>().ResetPumpkin();
         }
     }
 

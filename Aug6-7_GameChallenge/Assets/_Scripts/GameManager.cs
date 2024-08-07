@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -13,10 +14,15 @@ public class GameManager : MonoBehaviour
         GamePlaying,
         GameOver
     }
+    private float waitingToStartTimer = 0.5f;
+    private float countDownTimer = 3f;
+    private float runningTimer;
+
     public static GameManager Instance;
     private GameState gState;
 
     private bool isGamePaused = false;
+    public event EventHandler OnGameOverAction;
     public event EventHandler<OnMenuToggleEventArgs> MenuToggleAction;
     public class OnMenuToggleEventArgs : EventArgs
     {
@@ -24,6 +30,10 @@ public class GameManager : MonoBehaviour
     }
     private int score;
     [SerializeField] private ScoreUI scoreUI;
+    [SerializeField] private TextMeshProUGUI countdownTimerUI;
+    public event EventHandler OnCountdownChange;
+
+
     private void ChangeGameState(GameState state)
     {
         this.gState = state;
@@ -40,16 +50,15 @@ public class GameManager : MonoBehaviour
         Instance = this;
 
         gState = new GameState();
+        ChangeGameState(GameState.WaitingToStart);
     }
 
     private void Start()
     {
-        //for now:
-        ChangeGameState(GameState.GamePlaying);
-        //del
-
+        runningTimer = 0;
         score = 0;
         isGamePaused = false;
+        MusicManager.Instance.ChangeState(false);
         GameInput.Instance.MenuToggleAction += GameInput_MenuToggleAction;
     }
 
@@ -61,16 +70,44 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        switch (gState)
+        if (!IsGamePlayin())
         {
-            case GameState.WaitingToStart:
 
-                break;
+            switch (gState)
+            {
+                case GameState.WaitingToStart:
+                    runningTimer += Time.deltaTime;
+                    if (runningTimer > waitingToStartTimer)
+                    {
+                        runningTimer = countDownTimer;
+                        countdownTimerUI.gameObject.SetActive(true);
+                        ChangeGameState(GameState.CountDown);
+                        OnCountdownChange?.Invoke(this, EventArgs.Empty);
+                    }
+                    break;
+                case GameState.CountDown:
+                    runningTimer -= Time.deltaTime;
+                    float temp = (float)Math.Floor(runningTimer);
+                    if (temp + "" != countdownTimerUI.text)
+                    {
+                        OnCountdownChange?.Invoke(this, EventArgs.Empty);
+                        countdownTimerUI.text = "" + temp;
+                    }
+                    if (runningTimer <= 0f)
+                    {
+                        MusicManager.Instance.ChangeState(true);
+                        runningTimer = 0;
+                        countdownTimerUI.gameObject.SetActive(false);
+                        ChangeGameState(GameState.GamePlaying);
+                    }
+                    break;
+            }
         }
     }
     private void OnDestroy()
     {
-        isGamePaused= false;
+        isGamePaused = false;
+        ChangeGameState(GameState.WaitingToStart);
     }
     public void AddOneToScore()
     {
@@ -86,6 +123,15 @@ public class GameManager : MonoBehaviour
         return gState == GameState.GamePlaying;
     }
 
+    public void SetGameToOver()
+    {
+        if (IsGamePlayin())
+        {
+            ChangeGameState(GameState.GameOver);
+            OnGameOverAction?.Invoke(this, EventArgs.Empty);
+            Time.timeScale = 0f;
+        }
+    }
 
     public void ActivateMenuToggleAction()
     {
@@ -94,13 +140,16 @@ public class GameManager : MonoBehaviour
 
             if (isGamePaused)
             {
+                
                 MenuToggleAction?.Invoke(this, new OnMenuToggleEventArgs
                 {
                     ToggleDir = false,
                 });
+                Time.timeScale = 1f;
             }
             else if (!isGamePaused)
             {
+                Time.timeScale = 0f;
                 MenuToggleAction?.Invoke(this, new OnMenuToggleEventArgs
                 {
                     ToggleDir = true,

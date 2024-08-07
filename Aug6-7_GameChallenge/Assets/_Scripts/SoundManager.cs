@@ -29,6 +29,13 @@ public class SoundManager : MonoBehaviour
     {
         PlayerScript.Instance.OnTouchPumpkin += PlayerScript_OnTouchPumpkin;
         PlayerScript.Instance.OnTouchEnemy += PlayerScript_OnTouchEnemy;
+
+        GameManager.Instance.OnCountdownChange += GameManager_OnCountdownChange;
+    }
+
+    private void GameManager_OnCountdownChange(object sender, System.EventArgs e)
+    {
+        PlaySound(Sounds.COUNTDOWN, Vector3.zero);
     }
 
     private void PlayerScript_OnTouchEnemy(object sender, PlayerScript.OnObjecttouchEventArgs e)

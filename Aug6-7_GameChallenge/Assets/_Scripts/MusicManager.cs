@@ -34,4 +34,9 @@ public class MusicManager : MonoBehaviour
     }
     public float GetVolume()  { return volume;  }
 
+
+    public void ChangeState(bool state)
+    {
+        audioSource.enabled= state;
+    }
 }

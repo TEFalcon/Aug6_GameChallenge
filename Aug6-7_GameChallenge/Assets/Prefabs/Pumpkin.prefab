@@ -72,8 +72,8 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
-  m_Sprite: {fileID: -4471208305855004530, guid: ed5bdb297d2342f46821195fdf841e23, type: 3}
+  m_SortingOrder: -1
+  m_Sprite: {fileID: 1410703690106257483, guid: ed5bdb297d2342f46821195fdf841e23, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -172,7 +172,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 4809da64500b561479a4a3d6e8428ee0, type: 2}
   faceImgObj: {fileID: 3877193462827438721}
   pumpkinVisuals: {fileID: 6618236951443279536}
-  stratPoint: {x: -3.75, y: 4.4, z: 3.75}
+  startPoint: {x: -4, y: 5.5, z: 4}
 --- !u!1 &7163421683330510380
 GameObject:
   m_ObjectHideFlags: 0

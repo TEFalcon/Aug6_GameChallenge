@@ -31,7 +31,7 @@ public class GameManager : MonoBehaviour
     private int score;
     [SerializeField] private ScoreUI scoreUI;
     [SerializeField] private TextMeshProUGUI countdownTimerUI;
-    public event EventHandler OnCountdownChange;
+    public event EventHandler OnCountdownStart;
 
 
     private void ChangeGameState(GameState state)
@@ -82,7 +82,7 @@ public class GameManager : MonoBehaviour
                         runningTimer = countDownTimer;
                         countdownTimerUI.gameObject.SetActive(true);
                         ChangeGameState(GameState.CountDown);
-                        OnCountdownChange?.Invoke(this, EventArgs.Empty);
+                        OnCountdownStart?.Invoke(this, EventArgs.Empty);
                     }
                     break;
                 case GameState.CountDown:
@@ -90,7 +90,7 @@ public class GameManager : MonoBehaviour
                     float temp = (float)Math.Floor(runningTimer);
                     if (temp + "" != countdownTimerUI.text)
                     {
-                        OnCountdownChange?.Invoke(this, EventArgs.Empty);
+                        //OnCountdownStart?.Invoke(this, EventArgs.Empty);
                         countdownTimerUI.text = "" + temp;
                     }
                     if (runningTimer <= 0f)

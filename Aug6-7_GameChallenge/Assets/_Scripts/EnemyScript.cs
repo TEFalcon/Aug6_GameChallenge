@@ -36,7 +36,7 @@ public class EnemyScript : MonoBehaviour,Object
         {
             SetToWait();
         }
-        if (objectState == Object.objectState.Waiting)
+        else if (objectState == Object.objectState.Waiting)
         {
             runningTimer -= Time.deltaTime;
             if (runningTimer <= 0f)
@@ -50,22 +50,23 @@ public class EnemyScript : MonoBehaviour,Object
     public void SetToUninitialized()
     {
         objectState = Object.objectState.Uninitialized;
-        this.gameObject.SetActive(false);
+        //this.gameObject.SetActive(false);
+        this.gameObject.GetComponent<Rigidbody2D>().simulated = false;
         runningTimer = 0f;
     }
     public void SetToWait()
     {
         objectState = Object.objectState.Waiting;
         runningTimer = Random.Range(0f, 5f);
-        this.gameObject.SetActive(false);
-        Debug.Log(runningTimer);
+        //this.gameObject.SetActive(false);
+        this.gameObject.GetComponent<Rigidbody2D>().simulated = false;
     }
 
     public void SetToFall()
     {
-        Debug.Log("SetToFall");
         objectState = Object.objectState.Falling;
-        this.gameObject.SetActive(true);
+        //this.gameObject.SetActive(true);
+        this.gameObject.GetComponent<Rigidbody2D>().simulated = true;
     }
 
     private void PlayerScript_OnTouchEnemy(object sender, PlayerScript.OnObjecttouchEventArgs e)

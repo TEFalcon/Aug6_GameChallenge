@@ -11,7 +11,7 @@ public class MusicManager : MonoBehaviour
     public static MusicManager Instance { get; private set; }
 
     private AudioSource audioSource;
-    [SerializeField,Range(0f,0.5f)] private float volume =0.3f;
+    [SerializeField,Range(0f,0.5f)] private float volume =0.2f;
 
     private void Awake()
     {
@@ -19,7 +19,7 @@ public class MusicManager : MonoBehaviour
 
         audioSource= GetComponent<AudioSource>();
 
-        volume = PlayerPrefs.GetFloat(PLAYER_PREFS_MUSIC_VOLUME, 0.3f);
+        volume = PlayerPrefs.GetFloat(PLAYER_PREFS_MUSIC_VOLUME, 0.2f);
         audioSource.volume = volume;
     }
     public void ChangeVolume() {
@@ -34,6 +34,16 @@ public class MusicManager : MonoBehaviour
     }
     public float GetVolume()  { return volume;  }
 
+    private void Start()
+    {
+        this.gameObject.SetActive(true);
+        GameManager.Instance.OnGameOverAction += GameManager_OnGameOverAction;
+    }
+
+    private void GameManager_OnGameOverAction(object sender, System.EventArgs e)
+    {
+        this.gameObject.SetActive(false);
+    }
 
     public void ChangeState(bool state)
     {

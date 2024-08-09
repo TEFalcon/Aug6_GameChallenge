@@ -37,7 +37,12 @@ public class MusicManager : MonoBehaviour
     private void Start()
     {
         this.gameObject.SetActive(true);
-        GameManager.Instance.OnGameOverAction += GameManager_OnGameOverAction;
+        try
+        { GameManager.Instance.OnGameOverAction += GameManager_OnGameOverAction; }
+        catch
+        {
+
+        }
     }
 
     private void GameManager_OnGameOverAction(object sender, System.EventArgs e)
